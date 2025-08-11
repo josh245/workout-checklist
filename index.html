@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Weekly Workout Plan – Ripped + Endurance (Collapsible)</title>
+  <title>Weekly Workout Plan – Ripped + Endurance (Light/Dark + Local Save)</title>
   <style>
+    /* Dark theme (default) */
     :root {
       --bg: #0b0f14;
       --card: #101820;
@@ -16,6 +17,7 @@
       --danger: #ff6b6b;
       --shadow: 0 6px 20px rgba(0,0,0,.25);
     }
+    /* System light if user prefers and no manual override */
     @media (prefers-color-scheme: light) {
       :root {
         --bg: #f6f8fb;
@@ -29,6 +31,30 @@
         --shadow: 0 6px 20px rgba(0,0,0,.08);
       }
     }
+    /* Manual overrides via body classes */
+    body.theme-dark {
+      --bg: #0b0f14;
+      --card: #101820;
+      --text: #e6eef7;
+      --muted: #99a7b5;
+      --accent: #4da3ff;
+      --accent-2: #5ee1a1;
+      --border: #1f2a36;
+      --danger: #ff6b6b;
+      --shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    body.theme-light {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #0f1720;
+      --muted: #4b5563;
+      --accent: #2563eb;
+      --accent-2: #059669;
+      --border: #e5e7eb;
+      --danger: #dc2626;
+      --shadow: 0 6px 20px rgba(0,0,0,.08);
+    }
+
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
@@ -38,6 +64,7 @@
                   radial-gradient(1200px 600px at 120% 0%, rgba(94,225,161,0.12), transparent 60%),
                   var(--bg);
       color: var(--text);
+      transition: background-color .2s ease, color .2s ease;
     }
     .container { max-width: 900px; margin: 24px auto 80px; padding: 0 16px; }
     .header { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; margin-bottom: 18px; }
@@ -54,7 +81,7 @@
 
     /* Day cards (collapsible) */
     details.day { background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); overflow: clip; }
-    details.day[open] { outline: 2px solid rgba(77,163,255,.15); }
+    details.day[open] { outline: 2px solid color-mix(in oklab, var(--accent) 20%, transparent); }
     details.day > summary { list-style: none; cursor: pointer; padding: 16px; display:flex; align-items: center; justify-content: space-between; gap: 12px; }
     details.day > summary::-webkit-details-marker { display: none; }
     .day-title { font-size: 1.05rem; font-weight: 800; }
@@ -97,6 +124,13 @@
         <div class="sub">Goal: get leaner, build cardio endurance, and gain muscle & strength. Train Mon, Tue, Thu, and one Weekend day.</div>
       </div>
       <div class="controls">
+        <label class="select">Theme:
+          <select id="themeSelect" style="background:transparent; border:none; color:inherit; margin-left:6px">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
         <label class="select">Week:
           <select id="weekSelect" style="background:transparent; border:none; color:inherit; margin-left:6px"></select>
         </label>
@@ -109,9 +143,9 @@
       <summary>How to use & progression</summary>
       <div style="margin-top:8px; color:var(--muted); line-height:1.5">
         <ul>
-          <li>Check items as you complete them. Progress is saved locally in your browser per week.</li>
+          <li>Check items as you complete them. Progress is saved locally per week.</li>
           <li>Strength guideline: 3–4 sets for compounds, 2–4 sets for accessories. Use RPE ~7–9 (1–3 reps in reserve).</li>
-          <li>Progression (4-week waves): Week1 baseline, Week2 +rep/+load, Week3 add a set to first two lifts, Week4 deload.</li>
+          <li>Progression (4-week waves): W1 baseline, W2 +rep/+load, W3 add a set to first two lifts, W4 deload.</li>
           <li>Cardio zones: Z2 = conversational pace. Tempo = comfortably hard. Intervals = 85–95% effort.</li>
         </ul>
       </div>
@@ -131,7 +165,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="mon-warm">
                 <div class="desc"><span class="desc-title">5–8 min easy cardio + dynamic shoulders</span>
-                  <button class="info" tabindex="0" data-info="Bike/row briskly. 2×15 band pull-aparts, 20 shoulder circles, light push-ups.">i</button>
+                  <button class="info" aria-label="Warm-up info" tabindex="0" data-info="Bike/row briskly. 2×15 band pull-aparts, 20 shoulder circles, light push-ups.">i</button>
                 </div>
                 <span class="rx"></span>
               </label>
@@ -142,37 +176,37 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="mon-bench">
                 <div class="desc"><span class="desc-title">Barbell bench press</span>
-                  <button class="info" tabindex="0" data-info="Grip just wider than shoulders, feet planted, slight arch, touch lower chest, press up. 3–4×5–8 @ RPE 7–9.">i</button>
+                  <button class="info" aria-label="Bench press info" tabindex="0" data-info="Grip just wider than shoulders, feet planted, slight arch, touch lower chest, press up. 3–4×5–8 @ RPE 7–9.">i</button>
                 </div>
                 <span class="rx">3–4×5–8</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="mon-ohp">
                 <div class="desc"><span class="desc-title">Overhead press (barbell or DB)</span>
-                  <button class="info" tabindex="0" data-info="Squeeze glutes, brace, press straight up with head moving slightly forward under the bar at lockout.">i</button>
+                  <button class="info" aria-label="Overhead press info" tabindex="0" data-info="Squeeze glutes, brace, press straight up; head moves slightly forward under the bar at lockout.">i</button>
                 </div>
                 <span class="rx">3–4×5–8</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="mon-incline">
                 <div class="desc"><span class="desc-title">Incline DB press</span>
-                  <button class="info" tabindex="0" data-info="Bench 30–45°. Lower elbows 45° to torso, pause lightly on chest, drive up.">i</button>
+                  <button class="info" aria-label="Incline press info" tabindex="0" data-info="Bench 30–45°. Lower elbows 45° to torso, pause lightly, drive up.">i</button>
                 </div>
                 <span class="rx">3×8–12</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="mon-dips">
                 <div class="desc"><span class="desc-title">Dips or weighted push-ups</span>
-                  <button class="info" tabindex="0" data-info="Keep shoulders depressed, slight forward lean for chest bias; stop before shoulder discomfort.">i</button>
+                  <button class="info" aria-label="Dips info" tabindex="0" data-info="Shoulders depressed, slight forward lean for chest bias; stop before shoulder discomfort.">i</button>
                 </div>
                 <span class="rx">3×AMRAP (1–2 RIR)</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="mon-lateral">
                 <div class="desc"><span class="desc-title">Lateral raises</span>
-                  <button class="info" tabindex="0" data-info="Soft elbows, lead with elbows to shoulder height, control down 2–3s.">i</button>
+                  <button class="info" aria-label="Lateral raises info" tabindex="0" data-info="Soft elbows, lead with elbows to shoulder height, control down 2–3s.">i</button>
                 </div>
                 <span class="rx">3×12–20</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="mon-tri">
                 <div class="desc"><span class="desc-title">Triceps pressdowns or skull crushers</span>
-                  <button class="info" tabindex="0" data-info="Keep elbows tucked; full extension with squeeze, slow return.">i</button>
+                  <button class="info" aria-label="Triceps info" tabindex="0" data-info="Elbows tucked; full extension with squeeze, slow return.">i</button>
                 </div>
                 <span class="rx">3×10–15</span>
               </label>
@@ -183,9 +217,8 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="mon-z2">
                 <div class="desc"><span class="desc-title">20–30 min easy run/cycle/row</span>
-                  <button class="info" tabindex="0" data-info="Talk easily; HR ~60–70% max. Breathe through nose if possible.">i</button>
+                  <button class="info" aria-label="Z2 info" tabindex="0" data-info="Talk easily; HR ~60–70% max. Breathe through nose if possible.">i</button>
                 </div>
-                <span class="rx"></span>
               </label>
             </div>
           </div>
@@ -194,7 +227,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="mon-mob">
                 <div class="desc"><span class="desc-title">Pecs/shoulders stretch + T-spine</span>
-                  <button class="info" tabindex="0" data-info="Doorway pec stretch 2×30s/side, foam-roll thoracic 1–2 min.">i</button>
+                  <button class="info" aria-label="Mobility info" tabindex="0" data-info="Doorway pec stretch 2×30s/side, foam-roll thoracic 1–2 min.">i</button>
                 </div>
               </label>
             </div>
@@ -215,7 +248,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="tue-warm">
                 <div class="desc"><span class="desc-title">5–8 min easy + band rows & scap pulls</span>
-                  <button class="info" tabindex="0" data-info="2×15 band rows, 2×10 scap pull-ups, light RDLs with empty bar.">i</button>
+                  <button class="info" aria-label="Pull warm-up info" tabindex="0" data-info="2×15 band rows, 2×10 scap pull-ups, light RDLs with empty bar.">i</button>
                 </div>
               </label>
             </div>
@@ -225,31 +258,31 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="tue-pullup">
                 <div class="desc"><span class="desc-title">Pull-ups or lat pulldown</span>
-                  <button class="info" tabindex="0" data-info="Chest to bar path, full hang to chin-over. Use assistance or weight as needed.">i</button>
+                  <button class="info" aria-label="Pull-ups info" tabindex="0" data-info="Chest to bar path, full hang to chin-over. Use assistance or weight as needed.">i</button>
                 </div>
                 <span class="rx">4×6–10</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="tue-row">
                 <div class="desc"><span class="desc-title">Barbell or chest-supported row</span>
-                  <button class="info" tabindex="0" data-info="Hinge strong, neutral spine, row to lower ribs; pause 1s at top.">i</button>
+                  <button class="info" aria-label="Rows info" tabindex="0" data-info="Hinge strong, neutral spine, row to lower ribs; pause 1s at top.">i</button>
                 </div>
                 <span class="rx">3–4×6–10</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="tue-rdl">
                 <div class="desc"><span class="desc-title">Romanian deadlift</span>
-                  <button class="info" tabindex="0" data-info="Soft knees, hinge hips back until hamstring stretch, keep bar close, stand tall.">i</button>
+                  <button class="info" aria-label="RDL info" tabindex="0" data-info="Soft knees, hinge hips back until hamstring stretch, keep bar close, stand tall.">i</button>
                 </div>
                 <span class="rx">3–4×6–10</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="tue-face">
                 <div class="desc"><span class="desc-title">Face pulls or rear-delt raises</span>
-                  <button class="info" tabindex="0" data-info="Rope to forehead, elbows high; or DBs with pinkies slightly up at top.">i</button>
+                  <button class="info" aria-label="Rear delts info" tabindex="0" data-info="Rope to forehead, elbows high; or DBs with pinkies slightly up at top.">i</button>
                 </div>
                 <span class="rx">3×12–20</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="tue-curl">
                 <div class="desc"><span class="desc-title">EZ-bar or DB curls</span>
-                  <button class="info" tabindex="0" data-info="Elbows pinned, full stretch at bottom, squeeze hard at top.">i</button>
+                  <button class="info" aria-label="Curls info" tabindex="0" data-info="Elbows pinned, full stretch at bottom, squeeze hard at top.">i</button>
                 </div>
                 <span class="rx">3×8–12</span>
               </label>
@@ -260,7 +293,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="tue-vo2">
                 <div class="desc"><span class="desc-title">6×2:00 fast / 1:00 easy</span>
-                  <button class="info" tabindex="0" data-info="Run/bike at 85–95% for 2 min, recover 1 min very easy. Warm up 8–10 min, cool down 5–8 min.">i</button>
+                  <button class="info" aria-label="Intervals info" tabindex="0" data-info="Run/bike at 85–95% for 2 min, recover 1 min very easy. Warm up 8–10 min, cool down 5–8 min.">i</button>
                 </div>
               </label>
             </div>
@@ -270,12 +303,12 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="tue-mob">
                 <div class="desc"><span class="desc-title">Lat stretch + thoracic rotations</span>
-                  <button class="info" tabindex="0" data-info="Child's pose lat stretch 2×30s/side; open book rotations 10/side.">i</button>
+                  <button class="info" aria-label="Lat stretch info" tabindex="0" data-info="Child's pose lat stretch 2×30s/side; open book rotations 10/side.">i</button>
                 </div>
               </label>
               <label class="chk"><input type="checkbox" data-key="tue-core">
                 <div class="desc"><span class="desc-title">Dead bugs or reverse crunches</span>
-                  <button class="info" tabindex="0" data-info="Press low back to floor; slow controlled reps, exhale as legs extend.">i</button>
+                  <button class="info" aria-label="Core info" tabindex="0" data-info="Press low back to floor; slow controlled reps, exhale as legs extend.">i</button>
                 </div>
                 <span class="rx">3×10–15</span>
               </label>
@@ -297,7 +330,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="thu-warm">
                 <div class="desc"><span class="desc-title">5–8 min easy + leg swings, BW squats, hip openers</span>
-                  <button class="info" tabindex="0" data-info="Front/back & lateral leg swings 10–15/side, 2×10 BW squats, 10 hip airplanes/side.">i</button>
+                  <button class="info" aria-label="Leg warm-up info" tabindex="0" data-info="Front/back & lateral leg swings 10–15/side, 2×10 BW squats, 10 hip airplanes/side.">i</button>
                 </div>
               </label>
             </div>
@@ -307,31 +340,31 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="thu-squat">
                 <div class="desc"><span class="desc-title">Back squat or front squat</span>
-                  <button class="info" tabindex="0" data-info="Brace, sit between hips, hit depth you own, drive through mid-foot. Front squat: upright torso, elbows high.">i</button>
+                  <button class="info" aria-label="Squat info" tabindex="0" data-info="Brace, sit between hips, hit depth you own, drive through mid-foot. Front squat: upright torso, elbows high.">i</button>
                 </div>
                 <span class="rx">4×3–6</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="thu-bss">
                 <div class="desc"><span class="desc-title">Bulgarian split squat</span>
-                  <button class="info" tabindex="0" data-info="Rear foot on bench, long stride, descend vertical shin, torso slightly forward.">i</button>
+                  <button class="info" aria-label="BSS info" tabindex="0" data-info="Rear foot on bench, long stride, descend vertical shin, torso slightly forward.">i</button>
                 </div>
                 <span class="rx">3×8–12 / side</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="thu-hip">
                 <div class="desc"><span class="desc-title">Hip thrust or glute bridge</span>
-                  <button class="info" tabindex="0" data-info="Chin tucked, ribs down, squeeze glutes at top for 1–2s; avoid hyperextension.">i</button>
+                  <button class="info" aria-label="Hip thrust info" tabindex="0" data-info="Chin tucked, ribs down, squeeze glutes at top for 1–2s; avoid hyperextension.">i</button>
                 </div>
                 <span class="rx">3–4×6–10</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="thu-calf">
                 <div class="desc"><span class="desc-title">Calf raises</span>
-                  <button class="info" tabindex="0" data-info="Full stretch at bottom off a step if possible, hard squeeze at top.">i</button>
+                  <button class="info" aria-label="Calf raises info" tabindex="0" data-info="Full stretch at bottom off a step if possible, hard squeeze at top.">i</button>
                 </div>
                 <span class="rx">3–4×10–15</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="thu-core">
                 <div class="desc"><span class="desc-title">Planks + Pallof press</span>
-                  <button class="info" tabindex="0" data-info="Plank 30–45s braced; Pallof: resist rotation, slow tempo.">i</button>
+                  <button class="info" aria-label="Core work info" tabindex="0" data-info="Plank 30–45s braced; Pallof: resist rotation, slow tempo.">i</button>
                 </div>
                 <span class="rx">3×30–45s / 3×10–15</span>
               </label>
@@ -342,7 +375,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="thu-tempo">
                 <div class="desc"><span class="desc-title">20 min continuous at comfortably hard pace</span>
-                  <button class="info" tabindex="0" data-info="Breathing controlled but deep; HR ~75–85% max. Warm up 8–10 min.">i</button>
+                  <button class="info" aria-label="Tempo info" tabindex="0" data-info="Breathing controlled but deep; HR ~75–85% max. Warm up 8–10 min.">i</button>
                 </div>
               </label>
             </div>
@@ -352,7 +385,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="thu-mob">
                 <div class="desc"><span class="desc-title">Hips/hamstrings/quads stretch 6–8 min</span>
-                  <button class="info" tabindex="0" data-info="Couch stretch 2×30–45s/side, hamstring sliders, 90/90 hips.">i</button>
+                  <button class="info" aria-label="Lower body mobility info" tabindex="0" data-info="Couch stretch 2×30–45s/side, hamstring sliders, 90/90 hips.">i</button>
                 </div>
               </label>
             </div>
@@ -373,7 +406,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="we-warm">
                 <div class="desc"><span class="desc-title">5–8 min easy + dynamic full-body</span>
-                  <button class="info" tabindex="0" data-info="Light cardio + world’s greatest stretch x 5/side, shoulder circles, hip openers.">i</button>
+                  <button class="info" aria-label="Weekend warm-up info" tabindex="0" data-info="Light cardio + world’s greatest stretch x 5/side, shoulder circles, hip openers.">i</button>
                 </div>
               </label>
             </div>
@@ -383,37 +416,37 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="we-a">
                 <div class="desc"><span class="desc-title">Kettlebell swings or power cleans</span>
-                  <button class="info" tabindex="0" data-info="Hinge hard, snap hips; keep bell close. For cleans, pull close & rack fast.">i</button>
+                  <button class="info" aria-label="Swings/cleans info" tabindex="0" data-info="Hinge hard, snap hips; keep bell close. For cleans, pull close & rack fast.">i</button>
                 </div>
                 <span class="rx">8–12</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="we-b">
                 <div class="desc"><span class="desc-title">Pull-ups or inverted rows</span>
-                  <button class="info" tabindex="0" data-info="Straight body line, pull elbows to ribs; pause briefly at top.">i</button>
+                  <button class="info" aria-label="Pulls info" tabindex="0" data-info="Straight body line, pull elbows to ribs; pause briefly at top.">i</button>
                 </div>
                 <span class="rx">6–10</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="we-c">
                 <div class="desc"><span class="desc-title">Push-ups or DB bench</span>
-                  <button class="info" tabindex="0" data-info="Elbows ~30–45° from torso, full lockout, steady cadence.">i</button>
+                  <button class="info" aria-label="Push-ups info" tabindex="0" data-info="Elbows ~30–45° from torso, full lockout, steady cadence.">i</button>
                 </div>
                 <span class="rx">10–15</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="we-d">
                 <div class="desc"><span class="desc-title">Walking lunges</span>
-                  <button class="info" tabindex="0" data-info="Tall posture, soft knee touch, drive through front heel.">i</button>
+                  <button class="info" aria-label="Lunges info" tabindex="0" data-info="Tall posture, soft knee touch, drive through front heel.">i</button>
                 </div>
                 <span class="rx">12–16 / leg</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="we-e">
                 <div class="desc"><span class="desc-title">Farmer carry or front rack carry</span>
-                  <button class="info" tabindex="0" data-info="Pack shoulders down/back, walk steady, avoid leaning.">i</button>
+                  <button class="info" aria-label="Carry info" tabindex="0" data-info="Pack shoulders down/back, walk steady, avoid leaning.">i</button>
                 </div>
                 <span class="rx">20–40 m</span>
               </label>
               <label class="chk"><input type="checkbox" data-key="we-core">
                 <div class="desc"><span class="desc-title">Hanging knee raises or ab wheel</span>
-                  <button class="info" tabindex="0" data-info="Posterior tilt pelvis, slow lower, avoid swinging.">i</button>
+                  <button class="info" aria-label="Core circuit info" tabindex="0" data-info="Posterior tilt pelvis, slow lower, avoid swinging.">i</button>
                 </div>
                 <span class="rx">3×8–12</span>
               </label>
@@ -424,7 +457,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="we-long">
                 <div class="desc"><span class="desc-title">45–75 min Zone 2 run/ride/row/hike</span>
-                  <button class="info" tabindex="0" data-info="Steady conversational pace; fuel with water/electrolytes, optional carb if >60 min.">i</button>
+                  <button class="info" aria-label="Long Z2 info" tabindex="0" data-info="Steady conversational pace; fuel with water/electrolytes, optional carb if >60 min.">i</button>
                 </div>
               </label>
             </div>
@@ -434,7 +467,7 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="we-mob">
                 <div class="desc"><span class="desc-title">Full-body cooldown stretch</span>
-                  <button class="info" tabindex="0" data-info="Hit calves, quads, hammies, hip flexors, lats, pecs. 8–10 min total.">i</button>
+                  <button class="info" aria-label="Cooldown info" tabindex="0" data-info="Hit calves, quads, hammies, hip flexors, lats, pecs. 8–10 min total.">i</button>
                 </div>
               </label>
             </div>
@@ -454,22 +487,22 @@
             <div class="list">
               <label class="chk"><input type="checkbox" data-key="hb-protein">
                 <div class="desc"><span class="desc-title">Protein ≥ 1.6–2.2 g/kg bodyweight</span>
-                  <button class="info" tabindex="0" data-info="Hit protein at each meal (lean meats, eggs, dairy, tofu, whey).">i</button>
+                  <button class="info" aria-label="Protein info" tabindex="0" data-info="Hit protein at each meal (lean meats, eggs, dairy, tofu, whey).">i</button>
                 </div>
               </label>
               <label class="chk"><input type="checkbox" data-key="hb-steps">
                 <div class="desc"><span class="desc-title">Steps ≥ 8–12k or 30–60 min activity</span>
-                  <button class="info" tabindex="0" data-info="Walks between sets, post-meal walks, take stairs where possible.">i</button>
+                  <button class="info" aria-label="Steps info" tabindex="0" data-info="Walks between sets, post-meal walks, take stairs where possible.">i</button>
                 </div>
               </label>
               <label class="chk"><input type="checkbox" data-key="hb-sleep">
                 <div class="desc"><span class="desc-title">Sleep 7–9 hours</span>
-                  <button class="info" tabindex="0" data-info="Cool, dark room; consistent schedule; limit screens before bed.">i</button>
+                  <button class="info" aria-label="Sleep info" tabindex="0" data-info="Cool, dark room; consistent schedule; limit screens before bed.">i</button>
                 </div>
               </label>
               <label class="chk"><input type="checkbox" data-key="hb-water">
                 <div class="desc"><span class="desc-title">Hydration</span>
-                  <button class="info" tabindex="0" data-info="Aim for pale-yellow urine; add electrolytes if sweating heavily.">i</button>
+                  <button class="info" aria-label="Hydration info" tabindex="0" data-info="Aim for pale-yellow urine; add electrolytes if sweating heavily.">i</button>
                 </div>
               </label>
             </div>
@@ -487,6 +520,7 @@
 
   <script>
     (function(){
+      const themeSelect = document.getElementById('themeSelect');
       const weekSelect = document.getElementById('weekSelect');
       const markAllBtn = document.getElementById('markAllDone');
       const resetBtn = document.getElementById('resetWeek');
@@ -501,14 +535,30 @@
         weekSelect.appendChild(opt);
       }
 
-      // Pick current training week based on week-of-year (fallback to 1)
+      // Week-of-year default
       const now = new Date();
       const onejan = new Date(now.getFullYear(),0,1);
       const weekOfYear = Math.ceil((((now - onejan) / 86400000) + onejan.getDay()+1)/7);
       let initialWeek = Number(localStorage.getItem('workout.week')) || (weekOfYear % TOTAL_WEEKS) || 1;
       weekSelect.value = String(initialWeek);
 
-      function storageKeyBase(){ return 'workout.v2.w' + weekSelect.value + '.'; }
+      // THEME handling
+      const THEME_KEY = 'workout.theme';
+      function applyTheme(val){
+        document.body.classList.remove('theme-light','theme-dark');
+        if (val === 'light') document.body.classList.add('theme-light');
+        else if (val === 'dark') document.body.classList.add('theme-dark');
+      }
+      const savedTheme = localStorage.getItem(THEME_KEY) || 'system';
+      themeSelect.value = savedTheme;
+      applyTheme(savedTheme);
+      themeSelect.addEventListener('change', ()=>{
+        const v = themeSelect.value;
+        localStorage.setItem(THEME_KEY, v);
+        applyTheme(v);
+      });
+
+      function storageKeyBase(){ return 'workout.v3.w' + weekSelect.value + '.'; }
 
       function bindCheckboxes(){
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
@@ -521,8 +571,10 @@
       function loadState(){
         bindCheckboxes();
         const notesKey = storageKeyBase() + 'notes';
-        notesEl.value = localStorage.getItem(notesKey) || '';
-        notesEl.oninput = () => localStorage.setItem(notesKey, notesEl.value);
+        if (notesEl) {
+          notesEl.value = localStorage.getItem(notesKey) || '';
+          notesEl.oninput = () => localStorage.setItem(notesKey, notesEl.value);
+        }
       }
 
       function clearState(){
@@ -536,17 +588,16 @@
           cb.checked = val; const key = storageKeyBase() + cb.dataset.key; localStorage.setItem(key, val ? '1' : '0');
         });
         const notesKey = storageKeyBase() + 'notes';
-        if (!val) { localStorage.removeItem(notesKey); if (notesEl) notesEl.value = ''; }
+        if (!val && notesEl){ localStorage.removeItem(notesKey); notesEl.value = ''; }
       }
 
       weekSelect.onchange = () => { localStorage.setItem('workout.week', weekSelect.value); loadState(); };
       markAllBtn.onclick = () => setAllDone(true);
       resetBtn.onclick = () => { if(confirm('Reset all checkboxes and notes for this week?')) { clearState(); loadState(); } };
 
-      // Improve summary click target (toggle on right tag/caret click too)
+      // Prevent labels inside <summary> from blocking toggle (native works fine otherwise)
       document.querySelectorAll('details.day > summary').forEach(s => {
         s.addEventListener('click', (e) => {
-          // Let native toggle work; prevent label clicks inside summary
           if ((e.target instanceof HTMLElement) && e.target.closest('label')) e.preventDefault();
         });
       });
