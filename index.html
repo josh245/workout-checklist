@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weekly Workout Plan – Ripped + Endurance (Collapsible)</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #101820;
+      --text: #e6eef7;
+      --muted: #99a7b5;
+      --accent: #4da3ff;
+      --accent-2: #5ee1a1;
+      --border: #1f2a36;
+      --danger: #ff6b6b;
+      --shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6f8fb;
+        --card: #ffffff;
+        --text: #0f1720;
+        --muted: #4b5563;
+        --accent: #2563eb;
+        --accent-2: #059669;
+        --border: #e5e7eb;
+        --danger: #dc2626;
+        --shadow: 0 6px 20px rgba(0,0,0,.08);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(77,163,255,0.15), transparent 60%),
+                  radial-gradient(1200px 600px at 120% 0%, rgba(94,225,161,0.12), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+    }
+    .container { max-width: 900px; margin: 24px auto 80px; padding: 0 16px; }
+    .header { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; margin-bottom: 18px; }
+    h1 { font-size: 1.6rem; margin: 0; }
+    .sub { color: var(--muted); font-size: .95rem; margin-top: 6px; }
+    .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .select, .btn, .input { background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 10px 12px; border-radius: 12px; font-size: 0.95rem; }
+    .btn { cursor: pointer; }
+    .btn.ghost { background: transparent; }
+    .btn.danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+
+    /* Stacked layout */
+    .stack { display: grid; gap: 14px; }
+
+    /* Day cards (collapsible) */
+    details.day { background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); overflow: clip; }
+    details.day[open] { outline: 2px solid rgba(77,163,255,.15); }
+    details.day > summary { list-style: none; cursor: pointer; padding: 16px; display:flex; align-items: center; justify-content: space-between; gap: 12px; }
+    details.day > summary::-webkit-details-marker { display: none; }
+    .day-title { font-size: 1.05rem; font-weight: 800; }
+    .tag { font-size: .8rem; color: var(--muted); border: 1px dashed var(--border); padding: 3px 8px; border-radius: 999px; }
+    .chev { inline-size: 1rem; block-size: 1rem; transform: rotate(0deg); transition: transform .2s ease; opacity: .8; }
+    details.day[open] .chev { transform: rotate(90deg); }
+
+    .card-body { padding: 0 16px 14px 16px; }
+    .section { margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px; }
+    .section:first-of-type { border-top: none; padding-top: 0; }
+    .section h3 { font-size: .95rem; margin: 0 0 8px; color: var(--muted); }
+    .list { display: grid; gap: 8px; }
+
+    label.chk { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; align-items: center; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.02); }
+    input[type="checkbox"] { width: 18px; height: 18px; }
+    .desc { display:flex; align-items:center; gap: 8px; }
+    .desc-title { font-weight: 600; }
+    .rx { font-variant-numeric: tabular-nums; color: var(--muted); }
+
+    /* Info button + tooltip */
+    .info { position: relative; border: 1px solid var(--border); background: transparent; color: var(--muted); width: 20px; height: 20px; border-radius: 999px; display:inline-grid; place-items:center; font-size:.8rem; padding:0; cursor: help; }
+    .info:hover, .info:focus { color: var(--text); border-color: var(--accent); outline: none; }
+    .info::after { content: attr(data-info); position: absolute; left: 50%; top: calc(100% + 10px); transform: translateX(-50%); background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; width: min(280px, 70vw); box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .15s ease; z-index: 3; font-size: .9rem; line-height: 1.3; }
+    .info::before { content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); border: 6px solid transparent; border-bottom-color: var(--border); opacity: 0; transition: opacity .15s ease; }
+    .info:hover::after, .info:focus::after, .info:active::after { opacity: 1; }
+    .info:hover::before, .info:focus::before, .info:active::before { opacity: 1; }
+
+    details.howto { margin-bottom:14px; border: 1px dashed var(--border); border-radius: 12px; padding: 10px 12px; }
+    details.howto > summary { cursor: pointer; font-weight: 600; }
+
+    .note { width: 100%; min-height: 80px; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 10px; }
+    .footer { margin-top: 18px; color: var(--muted); font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Weekly Workout Plan</h1>
+        <div class="sub">Goal: get leaner, build cardio endurance, and gain muscle & strength. Train Mon, Tue, Thu, and one Weekend day.</div>
+      </div>
+      <div class="controls">
+        <label class="select">Week:
+          <select id="weekSelect" style="background:transparent; border:none; color:inherit; margin-left:6px"></select>
+        </label>
+        <button class="btn ghost" id="markAllDone">Mark all done</button>
+        <button class="btn danger" id="resetWeek">Reset week</button>
+      </div>
+    </div>
+
+    <details class="howto" open>
+      <summary>How to use & progression</summary>
+      <div style="margin-top:8px; color:var(--muted); line-height:1.5">
+        <ul>
+          <li>Check items as you complete them. Progress is saved locally in your browser per week.</li>
+          <li>Strength guideline: 3–4 sets for compounds, 2–4 sets for accessories. Use RPE ~7–9 (1–3 reps in reserve).</li>
+          <li>Progression (4-week waves): Week1 baseline, Week2 +rep/+load, Week3 add a set to first two lifts, Week4 deload.</li>
+          <li>Cardio zones: Z2 = conversational pace. Tempo = comfortably hard. Intervals = 85–95% effort.</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="stack">
+      <!-- MONDAY -->
+      <details class="day" id="monday" open>
+        <summary>
+          <span class="day-title">Monday — Push (Chest/Shoulders/Triceps) + Z2</span>
+          <span class="tag">Upper – Push</span>
+          <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 4l8 6-8 6V4z"/></svg>
+        </summary>
+        <div class="card-body">
+          <div class="section">
+            <h3>Warm-up</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="mon-warm">
+                <div class="desc"><span class="desc-title">5–8 min easy cardio + dynamic shoulders</span>
+                  <button class="info" tabindex="0" data-info="Bike/row briskly. 2×15 band pull-aparts, 20 shoulder circles, light push-ups.">i</button>
+                </div>
+                <span class="rx"></span>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Strength</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="mon-bench">
+                <div class="desc"><span class="desc-title">Barbell bench press</span>
+                  <button class="info" tabindex="0" data-info="Grip just wider than shoulders, feet planted, slight arch, touch lower chest, press up. 3–4×5–8 @ RPE 7–9.">i</button>
+                </div>
+                <span class="rx">3–4×5–8</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="mon-ohp">
+                <div class="desc"><span class="desc-title">Overhead press (barbell or DB)</span>
+                  <button class="info" tabindex="0" data-info="Squeeze glutes, brace, press straight up with head moving slightly forward under the bar at lockout.">i</button>
+                </div>
+                <span class="rx">3–4×5–8</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="mon-incline">
+                <div class="desc"><span class="desc-title">Incline DB press</span>
+                  <button class="info" tabindex="0" data-info="Bench 30–45°. Lower elbows 45° to torso, pause lightly on chest, drive up.">i</button>
+                </div>
+                <span class="rx">3×8–12</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="mon-dips">
+                <div class="desc"><span class="desc-title">Dips or weighted push-ups</span>
+                  <button class="info" tabindex="0" data-info="Keep shoulders depressed, slight forward lean for chest bias; stop before shoulder discomfort.">i</button>
+                </div>
+                <span class="rx">3×AMRAP (1–2 RIR)</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="mon-lateral">
+                <div class="desc"><span class="desc-title">Lateral raises</span>
+                  <button class="info" tabindex="0" data-info="Soft elbows, lead with elbows to shoulder height, control down 2–3s.">i</button>
+                </div>
+                <span class="rx">3×12–20</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="mon-tri">
+                <div class="desc"><span class="desc-title">Triceps pressdowns or skull crushers</span>
+                  <button class="info" tabindex="0" data-info="Keep elbows tucked; full extension with squeeze, slow return.">i</button>
+                </div>
+                <span class="rx">3×10–15</span>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Cardio – Zone 2</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="mon-z2">
+                <div class="desc"><span class="desc-title">20–30 min easy run/cycle/row</span>
+                  <button class="info" tabindex="0" data-info="Talk easily; HR ~60–70% max. Breathe through nose if possible.">i</button>
+                </div>
+                <span class="rx"></span>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Mobility</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="mon-mob">
+                <div class="desc"><span class="desc-title">Pecs/shoulders stretch + T-spine</span>
+                  <button class="info" tabindex="0" data-info="Doorway pec stretch 2×30s/side, foam-roll thoracic 1–2 min.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- TUESDAY -->
+      <details class="day" id="tuesday" open>
+        <summary>
+          <span class="day-title">Tuesday — Pull (Back/Biceps) + VO₂ Intervals</span>
+          <span class="tag">Upper – Pull</span>
+          <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 4l8 6-8 6V4z"/></svg>
+        </summary>
+        <div class="card-body">
+          <div class="section">
+            <h3>Warm-up</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="tue-warm">
+                <div class="desc"><span class="desc-title">5–8 min easy + band rows & scap pulls</span>
+                  <button class="info" tabindex="0" data-info="2×15 band rows, 2×10 scap pull-ups, light RDLs with empty bar.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Strength</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="tue-pullup">
+                <div class="desc"><span class="desc-title">Pull-ups or lat pulldown</span>
+                  <button class="info" tabindex="0" data-info="Chest to bar path, full hang to chin-over. Use assistance or weight as needed.">i</button>
+                </div>
+                <span class="rx">4×6–10</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="tue-row">
+                <div class="desc"><span class="desc-title">Barbell or chest-supported row</span>
+                  <button class="info" tabindex="0" data-info="Hinge strong, neutral spine, row to lower ribs; pause 1s at top.">i</button>
+                </div>
+                <span class="rx">3–4×6–10</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="tue-rdl">
+                <div class="desc"><span class="desc-title">Romanian deadlift</span>
+                  <button class="info" tabindex="0" data-info="Soft knees, hinge hips back until hamstring stretch, keep bar close, stand tall.">i</button>
+                </div>
+                <span class="rx">3–4×6–10</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="tue-face">
+                <div class="desc"><span class="desc-title">Face pulls or rear-delt raises</span>
+                  <button class="info" tabindex="0" data-info="Rope to forehead, elbows high; or DBs with pinkies slightly up at top.">i</button>
+                </div>
+                <span class="rx">3×12–20</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="tue-curl">
+                <div class="desc"><span class="desc-title">EZ-bar or DB curls</span>
+                  <button class="info" tabindex="0" data-info="Elbows pinned, full stretch at bottom, squeeze hard at top.">i</button>
+                </div>
+                <span class="rx">3×8–12</span>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Cardio – Intervals</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="tue-vo2">
+                <div class="desc"><span class="desc-title">6×2:00 fast / 1:00 easy</span>
+                  <button class="info" tabindex="0" data-info="Run/bike at 85–95% for 2 min, recover 1 min very easy. Warm up 8–10 min, cool down 5–8 min.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Mobility/Core</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="tue-mob">
+                <div class="desc"><span class="desc-title">Lat stretch + thoracic rotations</span>
+                  <button class="info" tabindex="0" data-info="Child's pose lat stretch 2×30s/side; open book rotations 10/side.">i</button>
+                </div>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="tue-core">
+                <div class="desc"><span class="desc-title">Dead bugs or reverse crunches</span>
+                  <button class="info" tabindex="0" data-info="Press low back to floor; slow controlled reps, exhale as legs extend.">i</button>
+                </div>
+                <span class="rx">3×10–15</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- THURSDAY -->
+      <details class="day" id="thursday" open>
+        <summary>
+          <span class="day-title">Thursday — Legs & Core + Tempo</span>
+          <span class="tag">Lower – Quads/Glutes/Hams</span>
+          <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 4l8 6-8 6V4z"/></svg>
+        </summary>
+        <div class="card-body">
+          <div class="section">
+            <h3>Warm-up</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="thu-warm">
+                <div class="desc"><span class="desc-title">5–8 min easy + leg swings, BW squats, hip openers</span>
+                  <button class="info" tabindex="0" data-info="Front/back & lateral leg swings 10–15/side, 2×10 BW squats, 10 hip airplanes/side.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Strength</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="thu-squat">
+                <div class="desc"><span class="desc-title">Back squat or front squat</span>
+                  <button class="info" tabindex="0" data-info="Brace, sit between hips, hit depth you own, drive through mid-foot. Front squat: upright torso, elbows high.">i</button>
+                </div>
+                <span class="rx">4×3–6</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="thu-bss">
+                <div class="desc"><span class="desc-title">Bulgarian split squat</span>
+                  <button class="info" tabindex="0" data-info="Rear foot on bench, long stride, descend vertical shin, torso slightly forward.">i</button>
+                </div>
+                <span class="rx">3×8–12 / side</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="thu-hip">
+                <div class="desc"><span class="desc-title">Hip thrust or glute bridge</span>
+                  <button class="info" tabindex="0" data-info="Chin tucked, ribs down, squeeze glutes at top for 1–2s; avoid hyperextension.">i</button>
+                </div>
+                <span class="rx">3–4×6–10</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="thu-calf">
+                <div class="desc"><span class="desc-title">Calf raises</span>
+                  <button class="info" tabindex="0" data-info="Full stretch at bottom off a step if possible, hard squeeze at top.">i</button>
+                </div>
+                <span class="rx">3–4×10–15</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="thu-core">
+                <div class="desc"><span class="desc-title">Planks + Pallof press</span>
+                  <button class="info" tabindex="0" data-info="Plank 30–45s braced; Pallof: resist rotation, slow tempo.">i</button>
+                </div>
+                <span class="rx">3×30–45s / 3×10–15</span>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Cardio – Tempo</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="thu-tempo">
+                <div class="desc"><span class="desc-title">20 min continuous at comfortably hard pace</span>
+                  <button class="info" tabindex="0" data-info="Breathing controlled but deep; HR ~75–85% max. Warm up 8–10 min.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Mobility</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="thu-mob">
+                <div class="desc"><span class="desc-title">Hips/hamstrings/quads stretch 6–8 min</span>
+                  <button class="info" tabindex="0" data-info="Couch stretch 2×30–45s/side, hamstring sliders, 90/90 hips.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- WEEKEND -->
+      <details class="day" id="weekend" open>
+        <summary>
+          <span class="day-title">Weekend — Full Body Circuit + Long Z2</span>
+          <span class="tag">Full Body</span>
+          <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 4l8 6-8 6V4z"/></svg>
+        </summary>
+        <div class="card-body">
+          <div class="section">
+            <h3>Warm-up</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="we-warm">
+                <div class="desc"><span class="desc-title">5–8 min easy + dynamic full-body</span>
+                  <button class="info" tabindex="0" data-info="Light cardio + world’s greatest stretch x 5/side, shoulder circles, hip openers.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Strength Circuit (3–5 rounds)</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="we-a">
+                <div class="desc"><span class="desc-title">Kettlebell swings or power cleans</span>
+                  <button class="info" tabindex="0" data-info="Hinge hard, snap hips; keep bell close. For cleans, pull close & rack fast.">i</button>
+                </div>
+                <span class="rx">8–12</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="we-b">
+                <div class="desc"><span class="desc-title">Pull-ups or inverted rows</span>
+                  <button class="info" tabindex="0" data-info="Straight body line, pull elbows to ribs; pause briefly at top.">i</button>
+                </div>
+                <span class="rx">6–10</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="we-c">
+                <div class="desc"><span class="desc-title">Push-ups or DB bench</span>
+                  <button class="info" tabindex="0" data-info="Elbows ~30–45° from torso, full lockout, steady cadence.">i</button>
+                </div>
+                <span class="rx">10–15</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="we-d">
+                <div class="desc"><span class="desc-title">Walking lunges</span>
+                  <button class="info" tabindex="0" data-info="Tall posture, soft knee touch, drive through front heel.">i</button>
+                </div>
+                <span class="rx">12–16 / leg</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="we-e">
+                <div class="desc"><span class="desc-title">Farmer carry or front rack carry</span>
+                  <button class="info" tabindex="0" data-info="Pack shoulders down/back, walk steady, avoid leaning.">i</button>
+                </div>
+                <span class="rx">20–40 m</span>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="we-core">
+                <div class="desc"><span class="desc-title">Hanging knee raises or ab wheel</span>
+                  <button class="info" tabindex="0" data-info="Posterior tilt pelvis, slow lower, avoid swinging.">i</button>
+                </div>
+                <span class="rx">3×8–12</span>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Cardio – Long Endurance</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="we-long">
+                <div class="desc"><span class="desc-title">45–75 min Zone 2 run/ride/row/hike</span>
+                  <button class="info" tabindex="0" data-info="Steady conversational pace; fuel with water/electrolytes, optional carb if >60 min.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Mobility</h3>
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="we-mob">
+                <div class="desc"><span class="desc-title">Full-body cooldown stretch</span>
+                  <button class="info" tabindex="0" data-info="Hit calves, quads, hammies, hip flexors, lats, pecs. 8–10 min total.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- HABITS -->
+      <details class="day" id="habits" open>
+        <summary>
+          <span class="day-title">Daily Habits (optional but recommended)</span>
+          <span class="tag">Recovery & Body Comp</span>
+          <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 4l8 6-8 6V4z"/></svg>
+        </summary>
+        <div class="card-body">
+          <div class="section">
+            <div class="list">
+              <label class="chk"><input type="checkbox" data-key="hb-protein">
+                <div class="desc"><span class="desc-title">Protein ≥ 1.6–2.2 g/kg bodyweight</span>
+                  <button class="info" tabindex="0" data-info="Hit protein at each meal (lean meats, eggs, dairy, tofu, whey).">i</button>
+                </div>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="hb-steps">
+                <div class="desc"><span class="desc-title">Steps ≥ 8–12k or 30–60 min activity</span>
+                  <button class="info" tabindex="0" data-info="Walks between sets, post-meal walks, take stairs where possible.">i</button>
+                </div>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="hb-sleep">
+                <div class="desc"><span class="desc-title">Sleep 7–9 hours</span>
+                  <button class="info" tabindex="0" data-info="Cool, dark room; consistent schedule; limit screens before bed.">i</button>
+                </div>
+              </label>
+              <label class="chk"><input type="checkbox" data-key="hb-water">
+                <div class="desc"><span class="desc-title">Hydration</span>
+                  <button class="info" tabindex="0" data-info="Aim for pale-yellow urine; add electrolytes if sweating heavily.">i</button>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Notes</h3>
+            <textarea id="notes" class="note" placeholder="Wins, loads/reps to remember, how did it feel?"></textarea>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="footer">Tip: If you train Saturday <em>or</em> Sunday, use the Weekend card either day.</div>
+  </div>
+
+  <script>
+    (function(){
+      const weekSelect = document.getElementById('weekSelect');
+      const markAllBtn = document.getElementById('markAllDone');
+      const resetBtn = document.getElementById('resetWeek');
+      const notesEl = document.getElementById('notes');
+      const TOTAL_WEEKS = 24;
+
+      // Build week options
+      for (let i=1; i<=TOTAL_WEEKS; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = 'Week ' + i;
+        weekSelect.appendChild(opt);
+      }
+
+      // Pick current training week based on week-of-year (fallback to 1)
+      const now = new Date();
+      const onejan = new Date(now.getFullYear(),0,1);
+      const weekOfYear = Math.ceil((((now - onejan) / 86400000) + onejan.getDay()+1)/7);
+      let initialWeek = Number(localStorage.getItem('workout.week')) || (weekOfYear % TOTAL_WEEKS) || 1;
+      weekSelect.value = String(initialWeek);
+
+      function storageKeyBase(){ return 'workout.v2.w' + weekSelect.value + '.'; }
+
+      function bindCheckboxes(){
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          const key = storageKeyBase() + cb.dataset.key;
+          cb.checked = localStorage.getItem(key) === '1';
+          cb.onchange = () => localStorage.setItem(key, cb.checked ? '1' : '0');
+        });
+      }
+
+      function loadState(){
+        bindCheckboxes();
+        const notesKey = storageKeyBase() + 'notes';
+        notesEl.value = localStorage.getItem(notesKey) || '';
+        notesEl.oninput = () => localStorage.setItem(notesKey, notesEl.value);
+      }
+
+      function clearState(){
+        const prefix = storageKeyBase();
+        const keys = Object.keys(localStorage).filter(k => k.startsWith(prefix));
+        for (const k of keys) localStorage.removeItem(k);
+      }
+
+      function setAllDone(val){
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          cb.checked = val; const key = storageKeyBase() + cb.dataset.key; localStorage.setItem(key, val ? '1' : '0');
+        });
+        const notesKey = storageKeyBase() + 'notes';
+        if (!val) { localStorage.removeItem(notesKey); if (notesEl) notesEl.value = ''; }
+      }
+
+      weekSelect.onchange = () => { localStorage.setItem('workout.week', weekSelect.value); loadState(); };
+      markAllBtn.onclick = () => setAllDone(true);
+      resetBtn.onclick = () => { if(confirm('Reset all checkboxes and notes for this week?')) { clearState(); loadState(); } };
+
+      // Improve summary click target (toggle on right tag/caret click too)
+      document.querySelectorAll('details.day > summary').forEach(s => {
+        s.addEventListener('click', (e) => {
+          // Let native toggle work; prevent label clicks inside summary
+          if ((e.target instanceof HTMLElement) && e.target.closest('label')) e.preventDefault();
+        });
+      });
+
+      // Initial
+      loadState();
+    })();
+  </script>
+</body>
+</html>
