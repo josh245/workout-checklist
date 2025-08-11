@@ -1,57 +1,43 @@
-Workout Checklist – README
+# Workout Checklist – README
 
 A standalone, offline‑friendly workout tracking web app for building muscle, strength, and cardio endurance.
 
-Features
+## Features
 
-Weekly Workout Plan covering all major muscle groups
+* **Weekly Workout Plan** covering all major muscle groups
+* **Collapsible daily sections** for Monday, Tuesday, Thursday, and Weekend sessions
+* **Cardio & mobility** built into each day
+* **Light/Dark/System themes** with saved preference
+* **Local storage saving** – progress & notes persist on your device
+* **Exercise info tooltips** – quick form & execution tips for each movement
 
-Collapsible daily sections for Monday, Tuesday, Thursday, and Weekend sessions
+## How to Use
 
-Cardio & mobility built into each day
+1. Open `index.html` in any modern browser (desktop or mobile).
+2. Select your **theme** from the dropdown in the header.
+3. Choose the current **week** to track progress.
+4. Check off exercises as you complete them – progress is auto‑saved.
+5. Add notes for weights, reps, or session feedback.
 
-Light/Dark/System themes with saved preference
-
-Local storage saving – progress & notes persist on your device
-
-Exercise info tooltips – quick form & execution tips for each movement
-
-How to Use
-
-Open index.html in any modern browser (desktop or mobile).
-
-Select your theme from the dropdown in the header.
-
-Choose the current week to track progress.
-
-Check off exercises as you complete them – progress is auto‑saved.
-
-Add notes for weights, reps, or session feedback.
-
-Hosting
+## Hosting
 
 You can:
 
-Double‑click the HTML file to open locally.
+* Double‑click the HTML file to open locally.
+* Upload to GitHub Pages, Netlify, or any static host for mobile/desktop access.
+* Each device will maintain its own saved data.
 
-Upload to GitHub Pages, Netlify, or any static host for mobile/desktop access.
+## Customization
 
-Each device will maintain its own saved data.
+* Edit the HTML/CSS to change colors, exercises, or weekly structure.
+* Update tooltips to include images or videos.
 
-Customization
+## Tech Stack
 
-Edit the HTML/CSS to change colors, exercises, or weekly structure.
+* **HTML5** + **CSS3** (custom properties for theming)
+* **JavaScript** (vanilla, no dependencies)
+* **localStorage** for offline persistence
 
-Update tooltips to include images or videos.
-
-Tech Stack
-
-HTML5 + CSS3 (custom properties for theming)
-
-JavaScript (vanilla, no dependencies)
-
-localStorage for offline persistence
-
-License
+## License
 
 Free to use and modify for personal workouts.
